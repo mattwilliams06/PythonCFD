@@ -130,6 +130,7 @@ def solverperiodic():
             v[:,-1] = 2*veast - v[:,-2]
             
             # Periodic boundary conditions for u
-            u[0,:]
+            u[0,:] = u[-2,:]
+            u[-1,:] = u[-1,:]
             
             
