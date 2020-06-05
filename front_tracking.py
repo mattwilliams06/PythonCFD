@@ -131,6 +131,8 @@ for step in range (nstep):
             
     #===============FRONT TRACKING AND DENSITY DISTRIBUTION==================#
     # Advect front (mine, validated)
+    # Bilinear interpolation of velocity in a cell to determine the front
+    # velocity
     uf=np.zeros((Nf+2)); vf=np.zeros((Nf+2))
     for i in range(1, Nf+1):
         ip = int(np.floor(xf[i]/dx))

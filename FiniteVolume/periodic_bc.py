@@ -16,8 +16,8 @@ def solverperiodic():
     Ly = 1.
     nx = 32
     ny = 32
-    dx = Lx/dx
-    dy = Lx/dy
+    dx = Lx/nx
+    dy = Lx/ny
     x = np.linspace(-0.5*dx, (nx+0.5)*dx, nx+2)
     y = np.linspace(-0.5*dy, (nx+0.5)*dy, ny+2)
 
@@ -56,7 +56,7 @@ def solverperiodic():
     rn = np.zeros((nx+2, ny+2))    # second order
     mn = np.zeros((nx+2, ny+2))
     for i in range(1, nx+1):
-        for i in range(1, ny+1):
+        for j in range(1, ny+1):
             if ((x[i]-xc)**2 + (y[j]-yc)**2) < rad**2:
                 r[i,j] = rho2
                 m[i,j] = m2
@@ -74,8 +74,8 @@ def solverperiodic():
     ty=np.zeros(nf+2)
 
     for i in range(nf+1):
-        xf[i]=xc-rad*sin(2.0*np.pi*i/nf)
-        yf[i]=yc+rad*cos(2.0*np.pi*i/nf)
+        xf[i]=xc-rad*np.sin(2.0*np.pi*i/nf)
+        yf[i]=yc+rad*np.cos(2.0*np.pi*i/nf)
 
     plotcount = 0
     #====================START THE LOOP======================#
@@ -101,4 +101,35 @@ def solverperiodic():
             tx[-1] = tx[1]   # Should this be tx[0]??
             ty[-1] = ty[1]
         
-        for l in range(nf+1)
+            for l in range(nf+1):
+                nfx = sigma*(tx[l]-tx[l-1]) # Force per unit length 
+                nfy = sigma*(ty[l]-ty[l-1])
+                # Bilinear interpolation of surface tension
+                ip = int(np.floor(xf[l]/dx))
+                jp = int(np.floor((yf[l] + 0.5*dy)/dy))
+                ax = xf[l]/dx - ip
+                ay = yf[l]/dy + 0.5 - jp
+                fx[ip,jp] += (1-ax)*(1-ay)*nfx/(dx*dy)
+                fx[ip+1,jp] += ax*(1-ay)*nfx/(dx*dy)
+                fx[ip,jp+1] += ay*(1-ax)*nfx/(dx*dy)
+                fx[ip+1,jp+1] += ax*ay*nfx/(dx*dy)
+                
+                ip = int(np.floor(xf[l]/dx + 0.5))
+                jp = int(np.floor(yf[l]/dy))
+                ax = (xf[l]/dx + 0.5) - ip
+                ay = yf[l]/dy - jp
+                fy[ip,jp] += (1-ax)*(1-ay)*nfx/(dx*dy)
+                fy[ip+1,jp] += ax*(1-ay)*nfx/(dx*dy)
+                fy[ip,jp+1] += ay*(1-ax)*nfx/(dx*dy)
+                fy[ip+1,jp+1] += ax*ay*nfx/(dx*dy)
+            
+            #================VELOCITY AND PRESSURE COMPUTATION===============#
+            
+            # Tangential velocity at boundaries
+            v[:,0] = 2*vwest - v[:,0]   # This is opposite of the example
+            v[:,-1] = 2*veast - v[:,-2]
+            
+            # Periodic boundary conditions for u
+            u[0,:]
+            
+            
