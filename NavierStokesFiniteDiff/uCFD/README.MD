@@ -1,0 +1,1 @@
+This directory contains codes associated with the Prof. Tony Saad graduate CFD course taught at the University of Utah. Videos and code examples can be found on his YouTube channel and at ucfd.tonysaad.net.
