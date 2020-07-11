@@ -1,0 +1,80 @@
+\documentclass{article}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\graphicspath{ {/Users/mattwilliams/Desktop/} }
+
+\begin{document}
+\begin{titlepage}
+	\begin{center}
+	\line(1,0){300} \\ % Slope of line and length. Double escape character adds a break after the line
+	[0.25in]               % Add spacing to the line above the title
+	\huge{\bfseries Homework 1, Tony Saad's uCFD Course} \\
+	[2mm]
+	\line(1,0){200} \\
+	[1.5cm]
+	\textsc{\LARGE From University of Utah CHEN 6355} \\
+	[1cm]
+	\includegraphics[scale=0.75]{advection} \\
+	[4cm]
+	\end{center}
+	\begin{flushright}
+	\textsc{\large Matt Williams} \\
+	matt.williams@alum.mit.edu
+	\end{flushright}
+\end{titlepage}
+\section{Question 1: The Energy Equation}\label{sec:Q4}
+\textit{What is a thermodynamic relation between temperature and enthalpy?} \\ \\
+The purpose of this question is to develop an equation for temperature from the Navier-Stokes energy equation: \\
+$$\frac{\partial \rho h}{\partial t} =\frac{D\rho }{Dt} -\nabla \cdot \textbf{u}\rho h\  -\tau_{ij} \frac{\partial u_{i}}{\partial x_{j}} -\nabla \cdot \textbf{q}$$
+Using the definition of the specific heat capacity at a constant temperature:
+$$\frac{dh}{dT} =c_{p}$$
+we can create a discretized expression for temperature in terms of enthalpy.
+$$\int^{h_{f}}_{h_{i}} dh=\int^{Tf}_{T_{i}} c_{p}dT$$
+$$T_{f}=T_{i}+\frac{1}{c_{p}} (h_{f}-h_{i})$$
+\textit{Write out the $\tau_{ij} \frac{\partial u_{i}}{\partial x_{j}}$ term. This term is the viscous dissipation. Note that repeated indices indicate a summation over all indices.}\\ \\
+Expanding the term as indicated above yields:
+$$\tau_{11} \frac{\partial u_{1}}{\partial x_{1}} +\tau_{12} \frac{\partial u_{1}}{\partial x_{2}} +\tau_{21} \frac{\partial u_{2}}{\partial x_{1}} +\tau_{22} \frac{\partial u_{2}}{\partial x_{2}} $$
+Converting this expression to drop the indices for the velocity and spatial dimensions:
+$$\tau_{11} \frac{\partial u}{\partial x} +\tau_{12} \frac{\partial u}{\partial y} +\tau_{21} \frac{\partial v}{\partial x} +\tau_{22} \frac{\partial v}{\partial y} $$
+Now, to expand on the definition of the stress tensor, that is:
+$$\tau_{ij} =-\mu \left( \frac{\partial u_{i}}{\partial x_{j}} +\frac{\partial u_{j}}{\partial x_{i}} \right)  +\frac{2}{3} \mu \delta_{ij} \nabla \cdot \textbf{u}$$
+The diagonal terms contain the extra contribution from the dirac delta function, and are expanded as:
+$$\tau_{11} =-\frac{4}{3} \mu \frac{\partial u}{\partial x} +\frac{2}{3} \mu \frac{\partial v}{\partial y} $$
+$$\tau_{22} =-\frac{4}{3} \mu \frac{\partial v}{\partial y} +\frac{2}{3} \mu \frac{\partial u}{\partial x} $$
+The off-diagonal terms contain only the contribution from the first term:
+$$\tau_{12} =-\mu \left( \frac{\partial u}{\partial y} +\frac{\partial v}{\partial x} \right) $$ 
+$$\tau_{21} =-\mu \left( \frac{\partial v}{\partial x} +\frac{\partial u}{\partial y} \right)  $$
+which are the same due to the symmetry of the stress tensor. Completing the multiplications for each term and simplifying results in:
+$$-\frac{4}{3} \mu \left[ \left( \frac{\partial u}{\partial x} \right)^{2}  -\frac{\partial u}{\partial x} \frac{\partial v}{\partial y} +\left( \frac{\partial v}{\partial y} \right)^{2}  \right]  -\mu \left( \frac{\partial u}{\partial y} +\frac{\partial v}{\partial x} \right)^{2}  $$ \\
+\textit{Assume Fourier's Law for heat transfer, i.e. $\textbf{q} = -k\nabla T$}\\
+Inserting Fourier's law, and the definition of the specific heat capacity:
+$$\rho c_{p}\frac{\partial T}{\partial t} =\frac{\partial p}{\partial t} +p\nabla \cdot \textbf{u}-\rho c_{p}T\nabla \cdot \textbf{u}+\frac{4}{3} \mu \left[ \left( \frac{\partial u}{\partial x} \right)^{2}  -\frac{\partial u}{\partial x} \frac{\partial v}{\partial y} +\left( \frac{\partial v}{\partial y} \right)^{2}  \right]  +\mu \left( \frac{\partial u}{\partial y} +\frac{\partial v}{\partial x} \right)^{2}  +k\nabla^{2} T$$
+A further simplification can be made if the fluid is assumed to be an ideal gas. In that case, the substitution $p = \rho RT$ can be made, getting another expression for the time derivative of the temperature.
+
+\section{Question 2: Vorticity-streamfunction Navier-Stokes}\label{sec:Q2}
+\textit{If a function $\psi$ exists such that $u\  =\  \frac{\partial \psi }{\partial y} ,\  v=-\frac{\partial \psi }{\partial y} $, show that continuity is satisfied by $\psi$.} \\
+Substituting the definition of the streamfunction for each velocity into the continuity equation:
+$$\frac{\partial }{\partial x} \frac{\partial \psi }{\partial y} -\frac{\partial }{\partial y} \frac{\partial \psi }{\partial x} =0$$
+$$\frac{\partial^{2} \psi }{\partial x\partial y} -\frac{\partial^{2} \psi }{\partial x\partial y} =0$$
+\textit{Derive an equation from the NS momentum equations that are a function only of vorticity and the streamfunction.} \\
+By differentiating (5) with respect to y and (6) with respect to x, we obtain:
+$$\frac{\partial^{2} u}{\partial y\partial t} +\left( \frac{\partial u}{\partial x} \frac{\partial u}{\partial y} +u\frac{\partial^{2} u}{\partial x\partial y} \right)  +\left( \frac{\partial v}{\partial y} \frac{\partial u}{\partial y} +v\frac{\partial^{2} v}{\partial y^{2}} \right)  =-\frac{1}{\rho } \frac{\partial^{2} p}{\partial x\partial y} +\frac{\mu }{\rho } \left( \frac{\partial^{3{}} u}{\partial x^{2}\partial y} +\frac{\partial^{3} u}{\partial y^{3}} \right)   $$
+$$\frac{\partial^{2} v}{\partial x\partial t} +\left( \frac{\partial u}{\partial x} \frac{\partial v}{\partial x} +u\frac{\partial^{2} v}{\partial x^{2}} \right)  +\left( \frac{\partial v}{\partial x} \frac{\partial v}{\partial y} +v\frac{\partial^{2} v}{\partial x\partial y} \right)  =-\frac{1}{\rho } \frac{\partial^{2} p}{\partial x\partial y} +\frac{\mu }{\rho } \left( \frac{\partial^{3{}} v}{\partial x^{3}} +\frac{\partial^{3} v}{\partial x\partial y^{2}} \right)   $$
+Subtracting the latter equation from the former:
+\begin{equation*}
+\begin{aligned}
+\frac{\partial }{\partial t} \left( \frac{\partial v}{\partial x} -\frac{\partial u}{\partial y} \right)  +u\frac{\partial }{\partial x} \left( \frac{\partial v}{\partial x} -\frac{\partial u}{\partial y} \right)  +v\frac{\partial }{\partial y} \left( \frac{\partial v}{\partial x} -\frac{\partial u}{\partial y} \right)  +\left( \frac{\partial u}{\partial x} +\frac{\partial v}{\partial y} \right)  \left( \frac{\partial v}{\partial x} -\frac{\partial u}{\partial y} \right)  =\\ \frac{\mu }{\rho } \left( \frac{\partial^{2} }{\partial x^{2}} \left[ \frac{\partial v}{\partial x} -\frac{\partial u}{\partial y} \right]  +\frac{\partial^{2} }{\partial y^{2}} \left[ \frac{\partial v}{\partial x} -\frac{\partial u}{\partial y} \right]  \right) 
+\end{aligned}
+\end{equation*}
+Using the definition of vorticity, $\omega =\nabla \times \textbf{u}=\left( \frac{\partial v}{\partial x} -\frac{\partial u}{\partial y} \right)  \textbf{j}$, the above equation becomes:
+$$\frac{\partial \omega }{\partial t} +\frac{\partial \psi }{\partial y} \frac{\partial \omega }{\partial x} -\frac{\partial \psi }{\partial x} \frac{\partial \omega }{\partial y} =\frac{\mu }{\rho } \left( \frac{\partial^{2} \omega }{\partial x^{2}} +\frac{\partial^{2} \omega }{\partial y^{2}} \right)  $$
+where we have taken advantage of the fact that the fourth term on the left-hand side contains the divergence of the velocity, which is zero for the case of a constant density. Because the vorticity is equal to a Poisson equation for the streamfunction:
+$$\omega =\frac{\partial v}{\partial x} -\frac{\partial u}{\partial y} =-\frac{\partial^{2} \psi }{\partial x^{2}} -\frac{\partial^{2} \psi }{\partial y^{2}} $$
+you would be able to find an initial streamfunction given an initial condition for the vorticity. An iteration strategy could be the following:
+\begin{itemize}
+	\item Find streamfunction from initial condition for vorticity using the Poisson equation
+	\item Find the next timestep for vorticity using the NS equation
+	\item Update the streamfunction using the new condition for vorticity
+	\item Repeat
+\end{itemize}
+\end{document}
